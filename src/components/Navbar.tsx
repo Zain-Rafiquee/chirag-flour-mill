@@ -1,6 +1,6 @@
 import { useEffect, useState, type MouseEvent } from 'react'
 import Logo from './Logo'
-import { scrollToHash } from '../lib/useLenis'
+import { getLenis, scrollToHash } from '../lib/useLenis'
 
 const LINKS = [
   { label: 'Products', href: '#products' },
@@ -83,14 +83,17 @@ export default function Navbar() {
       }`}
     >
       <div className="flex items-center justify-between gap-3">
-        <a href="#" className="flex shrink-0 items-center gap-2.5">
-          <Logo className="w-6 h-6 text-[#191919]" />
-          <span className="font-semibold text-base tracking-tight text-[#191919]">
-            Chirag Flour Mill
+        {/* min-w-0 + truncate rather than shrink-0: at 30 characters the name
+            no longer fits beside the links and the CTA at md, so it gives way
+            instead of pushing them off the bar. */}
+        <a href="#" className="flex min-w-0 items-center gap-2.5">
+          <Logo className="w-6 h-6 shrink-0 text-[#191919]" />
+          <span className="hidden min-[360px]:inline truncate font-semibold text-sm tracking-tight text-[#191919] lg:text-base">
+            Chirag Flour and General Mills
           </span>
         </a>
 
-        <div className="hidden md:flex items-center gap-8">
+        <div className="hidden md:flex shrink-0 items-center gap-6 lg:gap-8">
           {LINKS.map((link) => (
             <a
               key={link.label}

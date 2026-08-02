@@ -22,7 +22,7 @@ const REQUIRED: FieldName[] = ['name', 'business', 'city', 'product', 'volume']
 /** Formats the enquiry as a plain-text WhatsApp message. */
 function whatsappUrl(values: Record<FieldName, string>): string {
   const lines = [
-    'New enquiry from the Chirag Flour Mill website',
+    'New enquiry from the Chirag Flour and General Mills website',
     '',
     `Name: ${values.name.trim()}`,
     `Business: ${values.business.trim()}`,

@@ -32,15 +32,15 @@ const COLUMNS = [
 
 export default function Footer() {
   const wordmarkRef = useRef<HTMLDivElement | null>(null)
-  const textRef = useRef<HTMLSpanElement | null>(null)
+  const lineRefs = useRef<(HTMLSpanElement | null)[]>([])
   const reduced = useReducedMotion()
 
-  // Size the wordmark to the container rather than the viewport. A vw-based
-  // clamp overflows once max-w-7xl stops growing, and under-fills on phones.
+  // Size each wordmark line to the container rather than the viewport. A
+  // vw-based clamp overflows once max-w-7xl stops growing, and under-fills on
+  // phones. Each line is fitted independently, so both span the full width.
   useEffect(() => {
     const box = wordmarkRef.current
-    const text = textRef.current
-    if (!box || !text) return
+    if (!box) return
 
     let lastWidth = 0
 
@@ -50,14 +50,17 @@ export default function Footer() {
       if (!available || available === lastWidth) return
       lastWidth = available
 
-      // Text width scales linearly with font-size, so one measurement at a
-      // known size gives the exact size that fills the box. max-content is
-      // what makes the span report its own width instead of the box's.
-      text.style.fontSize = '100px'
-      text.style.width = 'max-content'
-      const natural = text.scrollWidth
-      text.style.width = ''
-      if (natural) text.style.fontSize = `${(available / natural) * 100}px`
+      for (const text of lineRefs.current) {
+        if (!text) continue
+        // Text width scales linearly with font-size, so one measurement at a
+        // known size gives the exact size that fills the box. max-content is
+        // what makes the span report its own width instead of the box's.
+        text.style.fontSize = '100px'
+        text.style.width = 'max-content'
+        const natural = text.scrollWidth
+        text.style.width = ''
+        if (natural) text.style.fontSize = `${(available / natural) * 100}px`
+      }
     }
 
     fit()
@@ -103,8 +106,9 @@ export default function Footer() {
         <div className="grid gap-12 pb-20 sm:grid-cols-2 md:grid-cols-4 md:gap-8">
           <div>
             <p className="max-w-xs text-sm leading-relaxed text-paper/60">
-              Chirag Flour Mill has stone-milled wheat on the Multan road since
-              2016, on Turkish-built plant. Family owned, one floor, still slow.
+              Chirag Flour and General Mills has stone-milled wheat on the
+              Multan road since 2016, on Turkish-built plant. Family owned, one
+              floor, still slow.
             </p>
           </div>
 
@@ -130,23 +134,32 @@ export default function Footer() {
         </div>
 
         {/* Oversized wordmark, unmasked bottom to top. Sized by measurement
-            above, so it fills the container at any width and never clips. */}
+            above, so it fills the container at any width and never clips.
+            Two lines: the full name on one would fit down to ~23px on a phone
+            and stop reading as a wordmark. */}
         <div
           ref={wordmarkRef}
           className="border-t border-paper/15 pt-8"
           style={{ clipPath: 'inset(0% 0% 100% 0%)' }}
         >
-          <span
-            ref={textRef}
-            aria-hidden="true"
-            className="block w-full whitespace-nowrap text-center font-serif leading-[0.85] tracking-tight text-paper"
-          >
-            Chirag Flour Mill
-          </span>
+          {['Chirag Flour', 'and General Mills'].map((line, i) => (
+            <span
+              key={line}
+              ref={(el) => {
+                lineRefs.current[i] = el
+              }}
+              aria-hidden="true"
+              className="block w-full whitespace-nowrap text-center font-serif leading-[0.85] tracking-tight text-paper"
+            >
+              {line}
+            </span>
+          ))}
         </div>
 
         <div className="flex flex-col gap-3 border-t border-paper/15 py-8 text-[11px] uppercase tracking-[0.15em] text-paper/40 sm:flex-row sm:items-center sm:justify-between">
-          <span>© {new Date().getFullYear()} Chirag Flour Mill</span>
+          <span>
+            © {new Date().getFullYear()} Chirag Flour and General Mills
+          </span>
           <span>PFA Licence 0000123 — Pir Mahal, Punjab</span>
         </div>
       </div>
