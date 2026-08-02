@@ -3,7 +3,6 @@ import {
   gsap,
   ScrollTrigger,
   GSAP_EASE,
-  useIsMobile,
   useReducedMotion,
 } from '../../lib/motion'
 import Figure from '../ui/Figure'
@@ -87,7 +86,9 @@ function StepNumber({ value, play }: { value: number; play: boolean }) {
   }, [play, value, reduced])
 
   return (
-    <span className="block font-serif text-6xl leading-none text-accent sm:text-7xl">
+    // The largest single item in the card, so it gives way first on a short
+    // viewport — that height goes to the photo instead.
+    <span className="block font-serif text-6xl leading-none text-accent sm:text-7xl [@media(max-height:760px)]:text-5xl">
       {String(shown).padStart(2, '0')}
     </span>
   )
@@ -95,16 +96,17 @@ function StepNumber({ value, play }: { value: number; play: boolean }) {
 
 function StageCard({ stage, active }: { stage: Stage; active: boolean }) {
   return (
-    // Card width is capped above lg so the run doesn't balloon on a wide
-    // monitor; the figure is capped in vh so the card still fits the pinned
-    // viewport on a short laptop.
-    <div className="flex h-full w-[78vw] shrink-0 flex-col justify-center px-5 sm:w-[52vw] sm:px-8 md:w-[38vw] lg:w-[32vw] lg:max-w-[26rem]">
+    // Width is capped above lg so the run doesn't balloon on a wide monitor.
+    // The card fills the track's height and the figure takes whatever the
+    // text leaves, so it fits a short phone and a tall desktop alike without
+    // per-breakpoint height guesses.
+    <div className="flex h-full w-[78vw] shrink-0 flex-col px-5 py-6 sm:w-[52vw] sm:px-8 md:w-[38vw] lg:w-[32vw] lg:max-w-[26rem]">
       <div data-stage-item>
         <StepNumber value={stage.step} play={active} />
       </div>
       <h3
         data-stage-item
-        className="mt-6 font-serif text-3xl font-normal tracking-tight text-ink md:text-4xl"
+        className="mt-4 font-serif text-2xl font-normal tracking-tight text-ink sm:text-3xl md:text-4xl"
       >
         {stage.title}
       </h3>
@@ -114,12 +116,15 @@ function StageCard({ stage, active }: { stage: Stage; active: boolean }) {
       >
         {stage.copy}
       </p>
-      <div data-stage-item className="mt-6 max-h-[34vh] overflow-hidden lg:mt-8">
+      <div data-stage-item className="mt-5 min-h-0 flex-1 sm:mt-6">
+        {/* h-full overrides the aspect ratio: the frame takes the leftover
+            space exactly and object-cover crops the photo into it. */}
         <Figure
           src={stage.image}
           alt={stage.alt ?? `${stage.title} stage at the mill`}
           ratio="4/3"
           seed={stage.step}
+          className="h-full"
         />
       </div>
     </div>
@@ -132,9 +137,10 @@ export default function Process() {
   const [progress, setProgress] = useState(0)
   const [activeStep, setActiveStep] = useState(0)
 
-  const mobile = useIsMobile()
   const reduced = useReducedMotion()
-  const pinned = !mobile && !reduced
+  // Phones get the same pinned horizontal run as the desktop. Only a reduced
+  // motion request falls back to the plain vertical stack.
+  const pinned = !reduced
 
   useEffect(() => {
     if (!pinned) return
@@ -234,21 +240,30 @@ export default function Process() {
   // --- Desktop: pinned horizontal run. ---
   return (
     <section id="process" className="relative bg-surface/60">
-      <div ref={viewportRef} className="relative h-screen overflow-hidden">
-        <div className="pointer-events-none absolute inset-x-0 top-0 z-10 px-5 pt-24 sm:px-8 md:px-12">
+      {/* A flex column, not absolute overlays: the heading and the rail take
+          what they need and the track gets exactly the rest, so nothing
+          overlaps on a short phone. svh keeps the pin stable while mobile
+          browser bars come and go. */}
+      <div
+        ref={viewportRef}
+        className="relative flex h-screen flex-col overflow-hidden supports-[height:100svh]:h-[100svh]"
+      >
+        <div className="shrink-0 px-5 pt-20 sm:px-8 sm:pt-24 md:px-12">
           <ProcessHeading />
         </div>
 
-        <div ref={trackRef} className="flex h-full w-max items-center pt-28 lg:pt-40">
-          {STAGES.map((stage) => (
-            <div key={stage.step} data-stage className="h-full">
-              <StageCard stage={stage} active={activeStep >= stage.step} />
-            </div>
-          ))}
+        <div className="min-h-0 flex-1 overflow-hidden">
+          <div ref={trackRef} className="flex h-full w-max">
+            {STAGES.map((stage) => (
+              <div key={stage.step} data-stage className="h-full">
+                <StageCard stage={stage} active={activeStep >= stage.step} />
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* Progress rail */}
-        <div className="absolute inset-x-5 bottom-10 z-10 sm:inset-x-8 md:inset-x-12">
+        <div className="shrink-0 px-5 pb-8 pt-2 sm:px-8 sm:pb-10 md:px-12">
           <div className="flex items-center justify-between pb-3 text-[11px] uppercase tracking-[0.15em] text-ink/40">
             <span>{STAGES[Math.max(0, activeStep - 1)]?.title ?? 'Sourcing'}</span>
             <span>

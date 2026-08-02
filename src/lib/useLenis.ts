@@ -7,6 +7,23 @@ let lenisInstance: Lenis | null = null
 export const getLenis = () => lenisInstance
 
 /**
+ * Scroll to an in-page target by hash. Lenis owns the scroll position, so a
+ * native anchor jump would land in the wrong place; the browser only takes
+ * over when Lenis isn't running (reduced motion).
+ *
+ * Returns false when nothing matches, so callers can leave the link alone.
+ */
+export function scrollToHash(href: string): boolean {
+  const target = document.querySelector(href)
+  if (!target) return false
+
+  const lenis = getLenis()
+  if (lenis) lenis.scrollTo(target as HTMLElement)
+  else target.scrollIntoView({ behavior: 'smooth' })
+  return true
+}
+
+/**
  * Smooth scroll, weighted on the heavier side, driven off GSAP's ticker so
  * ScrollTrigger and Lenis never fight over the frame.
  */

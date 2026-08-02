@@ -135,17 +135,38 @@ function Field({
   )
 }
 
-/** Hand-drawn map in the site palette — no third-party embed to restyle. */
+/** The mill's Google Maps listing. */
+const MAPS_URL = 'https://maps.app.goo.gl/yFKVG2gbC5qsV9Qt9'
+
+/**
+ * Hand-drawn map in the site palette — no third-party embed to restyle.
+ *
+ * The roads are the real layout around the mill at 30.7408, 72.4118: way
+ * geometry from OpenStreetMap, projected into this 400x300 frame, which
+ * covers about 1.15km across. The junction below the marker is where the
+ * bypass meets the road running north-east into Pir Mahal.
+ */
+const ROADS = {
+  primary: 'M408.0 41.9L348.0 84.3L231.4 167.9L204.8 187.0 M154.4 308.0L204.8 187.0',
+  secondary: 'M204.8 187.0L217.5 157.2L219.8 151.8L272.3 28.9L288.1 -8.0',
+  minor:
+    'M156.7 -8.0L136.0 8.3L111.3 27.1L91.9 34.4 M183.6 121.6L205.2 152.6L214.5 152.9L219.8 151.8 M217.5 157.2L224.4 159.9 M231.4 167.9L227.5 161.5 M224.4 159.9L227.5 161.5',
+}
+
 function Map() {
   return (
-    <div
-      className="relative aspect-[4/3] w-full overflow-hidden bg-surface"
-      role="img"
-      aria-label="Map showing the mill location on the Multan road at Pir Mahal"
+    <a
+      href={MAPS_URL}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Open the mill's location in Google Maps"
+      className="group relative block aspect-[4/3] w-full overflow-hidden bg-ink"
     >
+      {/* Dark plate: roads are drawn in paper on ink, the inverse of the rest
+          of the section, so the accent marker carries the eye. */}
       <svg viewBox="0 0 400 300" className="h-full w-full" aria-hidden="true">
-        <rect width="400" height="300" fill="#F4F3F3" />
-        <g stroke="#191919" strokeOpacity="0.09" strokeWidth="1">
+        <rect width="400" height="300" fill="#191919" />
+        <g stroke="#FFFFFF" strokeOpacity="0.06" strokeWidth="1">
           {Array.from({ length: 15 }, (_, i) => (
             <line key={`h${i}`} x1="0" y1={i * 20} x2="400" y2={i * 20} />
           ))}
@@ -153,35 +174,76 @@ function Map() {
             <line key={`v${i}`} x1={i * 20} y1="0" x2={i * 20} y2="300" />
           ))}
         </g>
-        <path
-          d="M0 210 C 90 200, 150 160, 220 150 S 330 120, 400 96"
+
+        <g fill="none" strokeLinecap="round" strokeLinejoin="round">
+          <path
+            d={ROADS.minor}
+            stroke="#FFFFFF"
+            strokeOpacity="0.16"
+            strokeWidth="1.5"
+          />
+          <path
+            d={ROADS.secondary}
+            stroke="#FFFFFF"
+            strokeOpacity="0.3"
+            strokeWidth="2.5"
+          />
+          <path
+            d={ROADS.primary}
+            stroke="#FFFFFF"
+            strokeOpacity="0.52"
+            strokeWidth="4"
+          />
+        </g>
+
+        <g
+          fontSize="9"
+          letterSpacing="1.5"
+          fill="#FFFFFF"
+          fillOpacity="0.42"
+          textAnchor="middle"
+        >
+          <text x="296" y="26">
+            PIR MAHAL
+          </text>
+          <text x="120" y="284">
+            BYPASS
+          </text>
+        </g>
+
+        <circle cx="200" cy="150" r="30" fill="#C2410C" fillOpacity="0.16" />
+        <circle
+          cx="200"
+          cy="150"
+          r="13"
           fill="none"
-          stroke="#191919"
-          strokeOpacity="0.35"
-          strokeWidth="3"
+          stroke="#C2410C"
+          strokeOpacity="0.55"
+          strokeWidth="1.5"
         />
-        <path
-          d="M60 300 C 90 230, 130 190, 210 148"
-          fill="none"
-          stroke="#191919"
-          strokeOpacity="0.16"
-          strokeWidth="2"
-        />
-        <circle cx="215" cy="150" r="26" fill="#C2410C" fillOpacity="0.1" />
-        <circle cx="215" cy="150" r="6" fill="#C2410C" />
-        <text
-          x="215"
-          y="130"
+        <circle cx="200" cy="150" r="6" fill="#E8590C" />
+        {/* Two lines: the full name on one would crowd the frame and sit on
+            top of the marker halo, whose top edge is y=120. */}
+        <g
           textAnchor="middle"
           fontSize="11"
           letterSpacing="2"
-          fill="#191919"
-          fillOpacity="0.6"
+          fill="#FFFFFF"
+          fillOpacity="0.8"
         >
-          THE MILL
-        </text>
+          <text x="200" y="102">
+            CHIRAG FLOUR
+          </text>
+          <text x="200" y="116">
+            AND GENERAL MILLS
+          </text>
+        </g>
       </svg>
-    </div>
+
+      <span className="absolute bottom-3 right-3 bg-paper/10 px-3 py-1.5 text-[10px] uppercase tracking-[0.15em] text-paper/70 backdrop-blur-sm transition-colors duration-300 group-hover:text-paper">
+        Open in Google Maps
+      </span>
+    </a>
   )
 }
 
@@ -349,9 +411,13 @@ export default function Contact() {
                       {label}
                     </dt>
                     <dd className="mt-1 text-sm text-ink/80">
-                      {label === 'WhatsApp' ? (
+                      {label === 'WhatsApp' || label === 'Address' ? (
                         <a
-                          href={`https://wa.me/${WHATSAPP_NUMBER}`}
+                          href={
+                            label === 'Address'
+                              ? MAPS_URL
+                              : `https://wa.me/${WHATSAPP_NUMBER}`
+                          }
                           target="_blank"
                           rel="noopener noreferrer"
                           className="underline decoration-ink/20 underline-offset-4 transition-colors duration-300 hover:text-accent"

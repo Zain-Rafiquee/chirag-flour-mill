@@ -1,6 +1,6 @@
 import { useEffect, useState, type MouseEvent } from 'react'
 import Logo from './Logo'
-import { getLenis } from '../lib/useLenis'
+import { scrollToHash } from '../lib/useLenis'
 
 const LINKS = [
   { label: 'Products', href: '#products' },
@@ -8,17 +8,6 @@ const LINKS = [
   { label: 'Contact', href: '#contact' },
   { label: 'About', href: '#heritage' },
 ]
-
-/**
- * Lenis owns the scroll position, so a native anchor jump would land in the
- * wrong place. Hand the target to Lenis instead; fall back to the browser
- * when it isn't running (reduced motion).
- */
-function scrollToTarget(target: Element) {
-  const lenis = getLenis()
-  if (lenis) lenis.scrollTo(target as HTMLElement)
-  else target.scrollIntoView({ behavior: 'smooth' })
-}
 
 export default function Navbar() {
   const [open, setOpen] = useState(false)
@@ -77,13 +66,12 @@ export default function Navbar() {
   }, [open])
 
   const onNavigate = (event: MouseEvent<HTMLAnchorElement>, href: string) => {
-    const target = document.querySelector(href)
-    if (!target) return
+    if (!document.querySelector(href)) return
     event.preventDefault()
     setOpen(false)
     // Deferred a frame so Lenis is running again before we ask it to scroll —
     // closing the sheet restarts it during the same commit.
-    requestAnimationFrame(() => scrollToTarget(target))
+    requestAnimationFrame(() => scrollToHash(href))
   }
 
   const grounded = scrolled || open
@@ -97,9 +85,7 @@ export default function Navbar() {
       <div className="flex items-center justify-between gap-3">
         <a href="#" className="flex shrink-0 items-center gap-2.5">
           <Logo className="w-6 h-6 text-[#191919]" />
-          {/* The wordmark is the first thing to go on a 320px phone, where the
-              menu and the CTA both have to stay reachable. */}
-          <span className="hidden min-[380px]:inline font-semibold text-base tracking-tight text-[#191919]">
+          <span className="font-semibold text-base tracking-tight text-[#191919]">
             Chirag Flour Mill
           </span>
         </a>
@@ -118,10 +104,12 @@ export default function Navbar() {
         </div>
 
         <div className="flex shrink-0 items-center gap-2">
+          {/* Desktop only — on phones this CTA lives in the hero instead, so
+              the bar stays down to the logo and the menu. */}
           <a
             href="#contact"
             onClick={(e) => onNavigate(e, '#contact')}
-            className="px-4 py-2 text-xs sm:px-5 sm:py-2.5 sm:text-sm bg-[#191919] text-white font-medium rounded-lg whitespace-nowrap hover:bg-[#191919]/90 transition-colors duration-200"
+            className="hidden md:inline-flex px-5 py-2.5 text-sm bg-[#191919] text-white font-medium rounded-lg whitespace-nowrap hover:bg-[#191919]/90 transition-colors duration-200"
           >
             Send Enquiry
           </a>

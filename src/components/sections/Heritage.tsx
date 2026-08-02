@@ -72,11 +72,6 @@ export default function Heritage() {
             seed={3}
             className="md:sticky md:top-28"
           />
-          <FadeUp delay={160}>
-            <p className="mt-4 text-[11px] uppercase tracking-[0.15em] text-ink/40">
-              The Turkish-built mill floor, commissioned 2016
-            </p>
-          </FadeUp>
         </div>
       </div>
     </section>

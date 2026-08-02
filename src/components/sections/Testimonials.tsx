@@ -25,27 +25,50 @@ const QUOTES = [
 
 const AUTOPLAY_MS = 7000
 
-/** Fades a string in character by character. Never slides. */
+/**
+ * Fades a string in character by character. Never slides.
+ *
+ * Split by word rather than straight to characters: the gaps between words
+ * have to be real, breakable spaces. Emitting U+00A0 for them — to stop the
+ * space collapsing — turns the whole quote into one unbreakable token that
+ * runs off the side of the screen. A space between two characters does not
+ * collapse anyway, so nothing is gained by it.
+ *
+ * Characters still animate individually; the word boxes are what wrap.
+ */
 function CharFade({ text, id }: { text: string; id: number }) {
   const reduced = useReducedMotion()
+  // Runs across the whole string so the stagger doesn't restart each word.
+  let charIndex = 0
 
   return (
     <span key={id} aria-label={text} className="inline">
-      {text.split('').map((char, i) => (
-        <span
-          key={`${id}-${i}`}
-          aria-hidden="true"
-          className="inline"
-          style={{
-            opacity: reduced ? 1 : 0,
-            animation: reduced
-              ? undefined
-              : `charIn 600ms ${EASE} forwards ${i * 9}ms`,
-          }}
-        >
-          {char === ' ' ? ' ' : char}
-        </span>
-      ))}
+      {text.split(/(\s+)/).map((chunk, c) => {
+        if (/^\s+$/.test(chunk)) return ' '
+
+        const offset = charIndex
+        charIndex += chunk.length
+
+        return (
+          <span key={`${id}-word-${c}`} className="inline-block">
+            {chunk.split('').map((char, i) => (
+              <span
+                key={i}
+                aria-hidden="true"
+                className="inline"
+                style={{
+                  opacity: reduced ? 1 : 0,
+                  animation: reduced
+                    ? undefined
+                    : `charIn 600ms ${EASE} forwards ${(offset + i) * 9}ms`,
+                }}
+              >
+                {char}
+              </span>
+            ))}
+          </span>
+        )
+      })}
     </span>
   )
 }
