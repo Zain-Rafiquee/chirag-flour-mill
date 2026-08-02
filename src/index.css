@@ -1,0 +1,71 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  background-color: #ffffff;
+}
+
+body {
+  margin: 0;
+  background-color: #ffffff;
+  color: #191919;
+  font-family: 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background: rgba(194, 65, 12, 0.18);
+}
+
+/* Character-level fade used by the testimonial swap. */
+@keyframes charIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Lenis keeps its own scroll position; this stops the browser fighting it. */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+/* Hide the native cursor only where the custom dot actually renders. */
+@media (pointer: fine) {
+  body:not(.reduced-motion) {
+    cursor: none;
+  }
+  body:not(.reduced-motion) a,
+  body:not(.reduced-motion) button,
+  body:not(.reduced-motion) input,
+  body:not(.reduced-motion) textarea,
+  body:not(.reduced-motion) select {
+    cursor: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  @media (pointer: fine) {
+    body {
+      cursor: auto;
+    }
+  }
+}
