@@ -10,36 +10,58 @@ import Figure from '../ui/Figure'
 import FadeUp from '../ui/FadeUp'
 import SplitText from '../ui/SplitText'
 
-const STAGES = [
+interface Stage {
+  step: number
+  title: string
+  copy: string
+  /** Omit to fall back to the CSS placeholder in Figure. */
+  image?: string
+  /** Describes the photo. Ignored when `image` is absent. */
+  alt?: string
+}
+
+const STAGES: Stage[] = [
   {
     step: 1,
     title: 'Sourcing',
-    copy: 'Standing crop bought by hand from eleven partner villages on the black soil belt.',
+    copy: 'Standing crop bought by hand from eleven partner villages on the canal belt.',
+    image: '/process-sourcing.webp',
+    alt: 'Two cupped hands lifting golden grain from a full bed of it',
   },
   {
     step: 2,
     title: 'Cleaning',
     copy: 'De-stoning, magnetic separation and aspiration until nothing but grain remains.',
+    image: '/process-cleaning.webp',
+    alt: 'Grain pouring onto the vibrating sieve deck of the stainless cleaning line',
   },
   {
     step: 3,
     title: 'Tempering',
     copy: 'Water rested into the kernel for eighteen hours so the bran peels away clean.',
+    image: '/process-tempering.webp',
+    alt: 'Wheat kernels resting in a shallow tray of water during tempering',
   },
   {
     step: 4,
     title: 'Grinding',
     copy: 'Slow stone rotation, held cool, so the germ and its oils survive the mill.',
+    image: '/process-grinding.webp',
+    alt: 'Fresh flour pouring from the discharge chute of a mill stand into a growing heap',
   },
   {
     step: 5,
     title: 'Sifting',
     copy: 'Graded through silk to the exact particle size each product is cut for.',
+    image: '/process-sifting.webp',
+    alt: 'Flour travelling across a fine mesh sieve deck, the fines falling through to the tray below',
   },
   {
     step: 6,
     title: 'Packing',
     copy: 'Filled, flushed and sealed within the hour, so it reaches you as it left us.',
+    image: '/process-packing.webp',
+    alt: 'Filled jute sacks stacked in tall rows across the mill warehouse',
   },
 ]
 
@@ -71,9 +93,12 @@ function StepNumber({ value, play }: { value: number; play: boolean }) {
   )
 }
 
-function StageCard({ stage, active }: { stage: (typeof STAGES)[number]; active: boolean }) {
+function StageCard({ stage, active }: { stage: Stage; active: boolean }) {
   return (
-    <div className="flex h-full w-[78vw] shrink-0 flex-col justify-center px-5 sm:w-[52vw] sm:px-8 md:w-[38vw] lg:w-[32vw]">
+    // Card width is capped above lg so the run doesn't balloon on a wide
+    // monitor; the figure is capped in vh so the card still fits the pinned
+    // viewport on a short laptop.
+    <div className="flex h-full w-[78vw] shrink-0 flex-col justify-center px-5 sm:w-[52vw] sm:px-8 md:w-[38vw] lg:w-[32vw] lg:max-w-[26rem]">
       <div data-stage-item>
         <StepNumber value={stage.step} play={active} />
       </div>
@@ -89,9 +114,10 @@ function StageCard({ stage, active }: { stage: (typeof STAGES)[number]; active: 
       >
         {stage.copy}
       </p>
-      <div data-stage-item className="mt-8">
+      <div data-stage-item className="mt-6 max-h-[34vh] overflow-hidden lg:mt-8">
         <Figure
-          alt={`${stage.title} stage at the mill`}
+          src={stage.image}
+          alt={stage.alt ?? `${stage.title} stage at the mill`}
           ratio="4/3"
           seed={stage.step}
         />
@@ -190,7 +216,8 @@ export default function Process() {
                   </p>
                   <div className="mt-6">
                     <Figure
-                      alt={`${stage.title} stage at the mill`}
+                      src={stage.image}
+                      alt={stage.alt ?? `${stage.title} stage at the mill`}
                       ratio="4/3"
                       seed={stage.step}
                     />
@@ -212,7 +239,7 @@ export default function Process() {
           <ProcessHeading />
         </div>
 
-        <div ref={trackRef} className="flex h-full w-max items-center pt-40">
+        <div ref={trackRef} className="flex h-full w-max items-center pt-28 lg:pt-40">
           {STAGES.map((stage) => (
             <div key={stage.step} data-stage className="h-full">
               <StageCard stage={stage} active={activeStep >= stage.step} />

@@ -4,9 +4,9 @@ import SplitText from '../ui/SplitText'
 
 const STATS = [
   { value: 240, suffix: '', label: 'Tonnes milled per day' },
-  { value: 71, suffix: '', label: 'Years operating' },
+  { value: 10, suffix: '', label: 'Years operating' },
   { value: 1840, suffix: '+', label: 'Retail partners' },
-  { value: 26, suffix: '', label: 'Districts served' },
+  { value: 20, suffix: '', label: 'Districts served' },
 ]
 
 function Counter({
@@ -39,7 +39,7 @@ function Counter({
 
   return (
     <span className="font-serif text-5xl leading-none text-paper sm:text-6xl md:text-7xl">
-      {shown.toLocaleString('en-IN')}
+      {shown.toLocaleString('en-PK')}
       {suffix}
     </span>
   )
@@ -120,7 +120,7 @@ export default function Scale() {
         </span>
         <SplitText
           as="h2"
-          text="Small enough to taste every lot. Large enough to supply a state."
+          text="Small enough to taste every lot. Large enough to supply a province."
           className="mt-4 max-w-3xl font-serif text-3xl font-normal leading-[1.12] tracking-tight text-paper sm:text-4xl md:text-5xl"
         />
 

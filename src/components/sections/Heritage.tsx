@@ -13,29 +13,30 @@ export default function Heritage() {
         <div className="md:col-span-7 md:pr-8">
           <FadeUp>
             <span className="text-[11px] uppercase tracking-[0.2em] text-ink/50">
-              Since 1954 — Heritage
+              Est. 2016 — The Mill
             </span>
           </FadeUp>
 
           <SplitText
             as="h2"
-            text="Three generations of stone and patience, milling grain the slow way."
+            text="Ten years of stone and patience, on machinery built in Turkey."
             className="mt-6 font-serif text-3xl font-normal leading-[1.12] tracking-tight text-ink sm:text-4xl md:text-5xl lg:text-6xl"
           />
 
           <div className="mt-10 grid gap-8 sm:grid-cols-2 md:mt-14">
             <FadeUp delay={120}>
               <p className="text-sm leading-relaxed text-ink/70 md:text-[15px]">
-                We buy standing crop from the same farming families our
-                grandfather did, on the black soil belt where the grain runs
-                hard and sweet. Every lot is tasted before it is bought.
+                We buy standing crop from the same farming families season
+                after season, on the canal belt of the Rachna Doab where the
+                grain runs hard and sweet. Every lot is tasted before it is
+                bought.
               </p>
             </FadeUp>
             <FadeUp delay={220}>
               <p className="text-sm leading-relaxed text-ink/70 md:text-[15px]">
-                The stones turn slowly and stay cool, so the germ survives the
-                grind. It costs us throughput. It is the reason the flour
-                smells like wheat and not like paper.
+                The plant is Turkish-built, and the stones turn slowly and stay
+                cool, so the germ survives the grind. It costs us throughput.
+                It is the reason the flour smells like wheat and not like paper.
               </p>
             </FadeUp>
           </div>
@@ -44,8 +45,8 @@ export default function Heritage() {
             <div className="h-px w-full bg-ink/10" />
             <dl className="mt-8 grid grid-cols-2 gap-8 sm:grid-cols-3">
               {[
-                ['1954', 'First stone mill'],
-                ['3', 'Generations'],
+                ['2016', 'Mill established'],
+                ['20', 'Districts served'],
                 ['11', 'Partner villages'],
               ].map(([value, label]) => (
                 <div key={label}>
@@ -64,7 +65,8 @@ export default function Heritage() {
         {/* Right: tall masked image with inner parallax */}
         <div className="md:col-span-5">
           <Figure
-            alt="Stone grinding wheel at the mill"
+            src="/mill-floor.jpg"
+            alt="Cutaway view of the Turkish-built milling plant: grain silos, cleaning line, roller stands and sifting floors above the loading bay"
             ratio="3/4"
             parallax={6}
             seed={3}
@@ -72,7 +74,7 @@ export default function Heritage() {
           />
           <FadeUp delay={160}>
             <p className="mt-4 text-[11px] uppercase tracking-[0.15em] text-ink/40">
-              The original 1954 chakki, still running
+              The Turkish-built mill floor, commissioned 2016
             </p>
           </FadeUp>
         </div>

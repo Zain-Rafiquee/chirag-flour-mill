@@ -5,16 +5,35 @@ import MagneticButton from '../ui/MagneticButton'
 
 type FieldName = 'name' | 'business' | 'city' | 'product' | 'volume' | 'message'
 
+/** Country code + number, digits only — the format wa.me expects. */
+const WHATSAPP_NUMBER = '923000000000'
+const WHATSAPP_DISPLAY = '+92 300 0000000'
+
 const PRODUCT_OPTIONS = [
-  'Whole Wheat / Chakki Atta',
-  'Refined Flour / Maida',
-  'Semolina / Suji',
-  'Wheat Bran',
-  'Multigrain Blend',
-  'Custom specification',
+  'Refined Atta',
+  'Maida',
+  'Chokar',
+  'Suji',
+  'Custom Specifications',
 ]
 
 const REQUIRED: FieldName[] = ['name', 'business', 'city', 'product', 'volume']
+
+/** Formats the enquiry as a plain-text WhatsApp message. */
+function whatsappUrl(values: Record<FieldName, string>): string {
+  const lines = [
+    'New enquiry from the Chirag Flour Mill website',
+    '',
+    `Name: ${values.name.trim()}`,
+    `Business: ${values.business.trim()}`,
+    `City: ${values.city.trim()}`,
+    `Product: ${values.product}`,
+    `Monthly volume: ${values.volume.trim()}`,
+  ]
+  if (values.message.trim()) lines.push(`Notes: ${values.message.trim()}`)
+
+  return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(lines.join('\n'))}`
+}
 
 function validate(name: FieldName, value: string): string {
   const trimmed = value.trim()
@@ -122,7 +141,7 @@ function Map() {
     <div
       className="relative aspect-[4/3] w-full overflow-hidden bg-surface"
       role="img"
-      aria-label="Map showing the mill location on the Nagpur–Katol road"
+      aria-label="Map showing the mill location on the Multan road at Pir Mahal"
     >
       <svg viewBox="0 0 400 300" className="h-full w-full" aria-hidden="true">
         <rect width="400" height="300" fill="#F4F3F3" />
@@ -176,7 +195,8 @@ export default function Contact() {
     message: '',
   })
   const [errors, setErrors] = useState<Partial<Record<FieldName, string>>>({})
-  const [sent, setSent] = useState(false)
+  /** The wa.me link built at submit, kept so the panel can re-offer it. */
+  const [sentUrl, setSentUrl] = useState('')
 
   const setField = (name: FieldName, value: string) => {
     setValues((current) => ({ ...current, [name]: value }))
@@ -198,7 +218,13 @@ export default function Contact() {
       if (error) next[key] = error
     }
     setErrors(next)
-    if (Object.keys(next).length === 0) setSent(true)
+    if (Object.keys(next).length > 0) return
+
+    // Opened straight from the submit gesture, so it isn't caught by popup
+    // blockers. On phones this hands off to the WhatsApp app.
+    const url = whatsappUrl(values)
+    setSentUrl(url)
+    window.open(url, '_blank', 'noopener,noreferrer')
   }
 
   return (
@@ -218,18 +244,24 @@ export default function Contact() {
         <div className="mt-16 grid gap-12 md:grid-cols-12 md:gap-16">
           {/* Form */}
           <div className="md:col-span-7">
-            {sent ? (
+            {sentUrl ? (
               <div
                 role="status"
                 className="border border-ink/10 bg-paper p-8 md:p-10"
               >
                 <h3 className="font-serif text-2xl text-ink">
-                  Thank you — that's with us.
+                  Your enquiry is ready on WhatsApp.
                 </h3>
                 <p className="mt-3 max-w-md text-sm leading-relaxed text-ink/65">
-                  We reply to bulk enquiries within one working day, usually with
-                  a spec sheet and an indicative per-tonne rate attached.
+                  We've opened a chat with your details filled in — send it and
+                  we'll reply within one working day, usually with a spec sheet
+                  and an indicative per-tonne rate.
                 </p>
+                <div className="mt-8">
+                  <MagneticButton href={sentUrl} target="_blank">
+                    Open WhatsApp again
+                  </MagneticButton>
+                </div>
               </div>
             ) : (
               <form noValidate onSubmit={onSubmit} className="grid gap-8 sm:grid-cols-2">
@@ -305,8 +337,11 @@ export default function Contact() {
             <FadeUp delay={120}>
               <dl className="mt-8 space-y-6">
                 {[
-                  ['Address', 'Survey 114, Katol Road, Nagpur, Maharashtra 441501'],
-                  ['WhatsApp', '+91 98220 00000'],
+                  [
+                    'Address',
+                    'Sandhelianwali Bypass, Multan Road, Pir Mahal, Pakistan 36300',
+                  ],
+                  ['WhatsApp', WHATSAPP_DISPLAY],
                   ['Hours', 'Mon–Sat, 8:00 – 18:30 IST'],
                 ].map(([label, value]) => (
                   <div key={label} className="border-t border-ink/10 pt-4">
@@ -316,7 +351,9 @@ export default function Contact() {
                     <dd className="mt-1 text-sm text-ink/80">
                       {label === 'WhatsApp' ? (
                         <a
-                          href="https://wa.me/919822000000"
+                          href={`https://wa.me/${WHATSAPP_NUMBER}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
                           className="underline decoration-ink/20 underline-offset-4 transition-colors duration-300 hover:text-accent"
                         >
                           {value}

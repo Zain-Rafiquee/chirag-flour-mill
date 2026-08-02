@@ -1,13 +1,13 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useReducedMotion } from '../../lib/motion'
 
 const ITEMS = [
   'Chakki Atta',
-  'Sharbati Wheat',
+  'Desi Wheat',
   'Maida',
   'Suji',
-  'Rava',
-  'Wheat Bran',
+  'Chokar',
+  'Fine Atta',
   'Multigrain',
   'Durum Semolina',
 ]
@@ -46,6 +46,29 @@ function WheatGlyph() {
 export default function Marquee() {
   const trackRef = useRef<HTMLDivElement | null>(null)
   const reduced = useReducedMotion()
+  /**
+   * Two copies only cover a viewport narrower than one copy. On a wide
+   * monitor the wrap would expose a blank strip, so add copies until two
+   * viewports' worth of track exists.
+   */
+  const [copies, setCopies] = useState(2)
+
+  useEffect(() => {
+    const track = trackRef.current
+    if (!track) return
+
+    const measure = () => {
+      const row = track.firstElementChild as HTMLElement | null
+      const rowWidth = row?.offsetWidth ?? 0
+      if (!rowWidth) return
+      setCopies(Math.max(2, Math.ceil((window.innerWidth * 2) / rowWidth)))
+    }
+
+    measure()
+    window.addEventListener('resize', measure)
+    void document.fonts?.ready.then(measure)
+    return () => window.removeEventListener('resize', measure)
+  }, [])
 
   useEffect(() => {
     if (reduced) return
@@ -81,11 +104,11 @@ export default function Marquee() {
       )
 
       offset -= speed * dt
-      const half = track.scrollWidth / 2
-      if (half > 0) {
-        // Wrap within the first copy's width; the second copy covers the gap.
-        if (offset <= -half) offset += half
-        if (offset > 0) offset -= half
+      // Wrap within one copy's width; the remaining copies cover the gap.
+      const step = track.scrollWidth / copies
+      if (step > 0) {
+        if (offset <= -step) offset += step
+        if (offset > 0) offset -= step
       }
       track.style.transform = `translate3d(${offset}px, 0, 0)`
     }
@@ -96,10 +119,11 @@ export default function Marquee() {
       window.removeEventListener('scroll', onScroll)
       cancelAnimationFrame(raf)
     }
-  }, [reduced])
+  }, [reduced, copies])
 
   const row = (key: string) => (
-    <div key={key} className="flex shrink-0 items-center" aria-hidden={key === 'b'}>
+    // Only the first copy is read out; the rest exist to fill the width.
+    <div key={key} className="flex shrink-0 items-center" aria-hidden={key !== '0'}>
       {ITEMS.map((item, i) => (
         <div key={`${item}-${i}`} className="flex items-center">
           <span className="whitespace-nowrap px-6 font-serif text-2xl text-ink sm:px-8 sm:text-3xl md:text-4xl">
@@ -117,8 +141,7 @@ export default function Marquee() {
       className="relative overflow-hidden border-y border-ink/10 bg-paper py-6 sm:py-8"
     >
       <div ref={trackRef} className="flex w-max will-change-transform">
-        {row('a')}
-        {row('b')}
+        {Array.from({ length: copies }, (_, i) => row(String(i)))}
       </div>
     </section>
   )

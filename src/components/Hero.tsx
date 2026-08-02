@@ -19,7 +19,7 @@ export default function Hero() {
   const scrubRef = useRef<HTMLDivElement | null>(null)
 
   return (
-    <div ref={scrubRef} className={`relative ${RUNWAY}`}>
+    <div ref={scrubRef} data-hero className={`relative ${RUNWAY}`}>
       {/* Pinned for the length of the runway, then releases and scrolls away. */}
       <section
         className={`sticky top-0 flex ${VIEWPORT} flex-col items-center overflow-hidden`}
@@ -27,7 +27,9 @@ export default function Hero() {
         <BoomerangVideoBg scrubRef={scrubRef} />
 
         <div className="relative z-10 flex flex-col items-center text-center pt-24 sm:pt-26 md:pt-32 px-4 sm:px-6">
-          <h1 className="font-serif text-4xl sm:text-5xl md:text-7xl lg:text-8xl leading-[1.1] tracking-tighter text-[#191919] font-normal">
+          {/* Fluid rather than stepped, so it scales smoothly from a 320px
+              phone to an ultrawide instead of jumping at each breakpoint. */}
+          <h1 className="font-serif text-[clamp(2.25rem,7.5vw+0.5rem,7rem)] leading-[1.1] tracking-tighter text-[#191919] font-normal">
             Build lasting
             <br />
             relationships.

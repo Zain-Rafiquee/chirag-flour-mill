@@ -25,14 +25,52 @@ const COLUMNS = [
     links: [
       ['Instagram', 'https://instagram.com'],
       ['LinkedIn', 'https://linkedin.com'],
-      ['WhatsApp', 'https://wa.me/919822000000'],
+      ['WhatsApp', 'https://wa.me/923000000000'],
     ],
   },
 ]
 
 export default function Footer() {
   const wordmarkRef = useRef<HTMLDivElement | null>(null)
+  const textRef = useRef<HTMLSpanElement | null>(null)
   const reduced = useReducedMotion()
+
+  // Size the wordmark to the container rather than the viewport. A vw-based
+  // clamp overflows once max-w-7xl stops growing, and under-fills on phones.
+  useEffect(() => {
+    const box = wordmarkRef.current
+    const text = textRef.current
+    if (!box || !text) return
+
+    let lastWidth = 0
+
+    const fit = () => {
+      const available = box.clientWidth
+      // Height changes as we resize the text; only react to width.
+      if (!available || available === lastWidth) return
+      lastWidth = available
+
+      // Text width scales linearly with font-size, so one measurement at a
+      // known size gives the exact size that fills the box. max-content is
+      // what makes the span report its own width instead of the box's.
+      text.style.fontSize = '100px'
+      text.style.width = 'max-content'
+      const natural = text.scrollWidth
+      text.style.width = ''
+      if (natural) text.style.fontSize = `${(available / natural) * 100}px`
+    }
+
+    fit()
+    const observer = new ResizeObserver(fit)
+    observer.observe(box)
+    // The serif is a webfont — remeasure once it has actually loaded.
+    void document.fonts?.ready.then(() => {
+      lastWidth = 0
+      fit()
+    })
+
+    return () => observer.disconnect()
+  }, [])
 
   useEffect(() => {
     const el = wordmarkRef.current
@@ -65,8 +103,8 @@ export default function Footer() {
         <div className="grid gap-12 pb-20 sm:grid-cols-2 md:grid-cols-4 md:gap-8">
           <div>
             <p className="max-w-xs text-sm leading-relaxed text-paper/60">
-              Chirag Flour Mill has stone-milled wheat on the Katol road since
-              1954. Family owned, still one floor, still slow.
+              Chirag Flour Mill has stone-milled wheat on the Multan road since
+              2016, on Turkish-built plant. Family owned, one floor, still slow.
             </p>
           </div>
 
@@ -91,17 +129,17 @@ export default function Footer() {
           ))}
         </div>
 
-        {/* Oversized wordmark, unmasked bottom to top. The 13.5vw step fills
-            the width for this 17-character name — retune if it changes. */}
+        {/* Oversized wordmark, unmasked bottom to top. Sized by measurement
+            above, so it fills the container at any width and never clips. */}
         <div
           ref={wordmarkRef}
           className="border-t border-paper/15 pt-8"
           style={{ clipPath: 'inset(0% 0% 100% 0%)' }}
         >
           <span
+            ref={textRef}
             aria-hidden="true"
             className="block w-full whitespace-nowrap text-center font-serif leading-[0.85] tracking-tight text-paper"
-            style={{ fontSize: 'clamp(2.5rem, 13.5vw, 13rem)' }}
           >
             Chirag Flour Mill
           </span>
@@ -109,7 +147,7 @@ export default function Footer() {
 
         <div className="flex flex-col gap-3 border-t border-paper/15 py-8 text-[11px] uppercase tracking-[0.15em] text-paper/40 sm:flex-row sm:items-center sm:justify-between">
           <span>© {new Date().getFullYear()} Chirag Flour Mill</span>
-          <span>FSSAI 10019011000123 — Nagpur, Maharashtra</span>
+          <span>PFA Licence 0000123 — Pir Mahal, Punjab</span>
         </div>
       </div>
     </footer>

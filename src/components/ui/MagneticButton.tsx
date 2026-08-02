@@ -8,6 +8,8 @@ interface MagneticButtonProps {
   className?: string
   onClick?: () => void
   type?: 'button' | 'submit'
+  /** Only meaningful alongside `href`. */
+  target?: '_blank'
 }
 
 /** Pull strength in px at the edge of the hit area. */
@@ -24,6 +26,7 @@ export default function MagneticButton({
   className = '',
   onClick,
   type = 'button',
+  target,
 }: MagneticButtonProps) {
   const hostRef = useRef<HTMLElement | null>(null)
   const innerRef = useRef<HTMLSpanElement | null>(null)
@@ -76,6 +79,8 @@ export default function MagneticButton({
       <a
         ref={hostRef as React.RefObject<HTMLAnchorElement>}
         href={href}
+        target={target}
+        rel={target === '_blank' ? 'noopener noreferrer' : undefined}
         className={`${base} ${skin} ${className}`}
       >
         {content}

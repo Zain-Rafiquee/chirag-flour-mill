@@ -6,8 +6,10 @@ import Figure from '../ui/Figure'
 
 interface Product {
   id: string
+  /** Local trade name, shown as the headline. */
   name: string
-  hindi: string
+  /** English descriptor, shown beneath the name. */
+  subtitle: string
   protein: string
   texture: string
   bestFor: string
@@ -18,8 +20,8 @@ interface Product {
 const PRODUCTS: Product[] = [
   {
     id: 'chakki',
-    name: 'Whole Wheat',
-    hindi: 'Chakki Atta',
+    name: 'Refined Atta',
+    subtitle: 'Stone-ground whole wheat',
     protein: '11.8%',
     texture: 'Coarse, flecked with bran',
     bestFor: 'Roti, paratha, everyday baking',
@@ -29,8 +31,8 @@ const PRODUCTS: Product[] = [
   },
   {
     id: 'maida',
-    name: 'Refined Flour',
-    hindi: 'Maida',
+    name: 'Maida',
+    subtitle: 'Refined flour',
     protein: '9.4%',
     texture: 'Fine, silk-sifted',
     bestFor: 'Pastry, naan, laminated dough',
@@ -40,36 +42,25 @@ const PRODUCTS: Product[] = [
   },
   {
     id: 'suji',
-    name: 'Semolina',
-    hindi: 'Suji / Rava',
+    name: 'Suji',
+    subtitle: 'Semolina',
     protein: '12.6%',
     texture: 'Granular, even cut',
-    bestFor: 'Upma, halwa, idli, pasta',
+    bestFor: 'Halwa, kheer, pasta, coatings',
     blurb:
       'Cut from the hard endosperm of durum and graded to a single particle size, so it hydrates evenly and never goes gummy.',
     seed: 3,
   },
   {
     id: 'bran',
-    name: 'Wheat Bran',
-    hindi: 'Chokar',
+    name: 'Chokar',
+    subtitle: 'Wheat bran',
     protein: '15.1%',
     texture: 'Flaked, light',
     bestFor: 'Fibre blends, breads, feed',
     blurb:
       'The outer layers, taken off clean during tempering and kept dry. High fibre, and the reason our whole wheat can be dialled to order.',
     seed: 4,
-  },
-  {
-    id: 'multigrain',
-    name: 'Multigrain Blend',
-    hindi: 'Mixed Atta',
-    protein: '13.2%',
-    texture: 'Coarse, varied',
-    bestFor: 'High-fibre roti, rustic loaves',
-    blurb:
-      'Wheat carrying jowar, bajra, ragi and oats, milled separately and blended by weight so the ratio never drifts between batches.',
-    seed: 5,
   },
 ]
 
@@ -119,7 +110,7 @@ function ProductCard({
             {product.name}
           </h3>
           <p className="mt-1 text-[11px] uppercase tracking-[0.15em] text-ink/45">
-            {product.hindi}
+            {product.subtitle}
           </p>
         </div>
 
@@ -174,7 +165,9 @@ function Overlay({
       />
 
       <motion.div
-        className="relative grid max-h-[88vh] w-full max-w-4xl gap-8 overflow-y-auto bg-paper p-6 sm:grid-cols-2 sm:p-10"
+        // svh, not vh: on mobile the large viewport sits behind the browser
+        // bars, so a vh-sized dialog runs off the bottom of the screen.
+        className="relative grid max-h-[88vh] w-full max-w-4xl gap-8 overflow-y-auto bg-paper p-6 supports-[height:100svh]:max-h-[88svh] sm:grid-cols-2 sm:p-10"
         initial={{ y: 24 }}
         animate={{ y: 0 }}
         exit={{ y: 16 }}
@@ -186,7 +179,7 @@ function Overlay({
 
         <div className="flex flex-col">
           <span className="text-[11px] uppercase tracking-[0.2em] text-ink/45">
-            {product.hindi}
+            {product.subtitle}
           </span>
           <h3 className="mt-3 font-serif text-3xl tracking-tight text-ink md:text-4xl">
             {product.name}
@@ -216,7 +209,9 @@ function Overlay({
           type="button"
           onClick={onClose}
           aria-label="Close details"
-          className="absolute right-4 top-4 grid h-9 w-9 place-items-center rounded-full border border-ink/15 text-ink transition-colors duration-300 hover:bg-ink hover:text-paper"
+          // Sits over the figure on a one-column phone layout, so it carries
+          // its own ground rather than relying on the panel behind it.
+          className="absolute right-4 top-4 grid h-9 w-9 place-items-center rounded-full border border-ink/15 bg-paper/90 text-ink backdrop-blur-sm transition-colors duration-300 hover:bg-ink hover:text-paper"
         >
           <span aria-hidden="true" className="text-lg leading-none">
             ×
@@ -245,7 +240,7 @@ export default function Products() {
           </FadeUp>
           <SplitText
             as="h2"
-            text="Five flours, cut for the way you actually cook."
+            text="Four flours, cut for the way you actually cook."
             className="mt-4 max-w-2xl font-serif text-3xl font-normal leading-[1.12] tracking-tight text-ink sm:text-4xl md:text-5xl"
           />
         </div>
@@ -264,10 +259,11 @@ export default function Products() {
             key={product.id}
             delay={i * 90}
             className={
+              // Two asymmetric rows of 9 of 12 columns, so the grid keeps
+              // deliberate whitespace instead of stranding a lone card.
               [
                 'lg:col-span-5',
                 'lg:col-span-4 lg:mt-24',
-                'lg:col-span-3',
                 'lg:col-span-4',
                 'lg:col-span-5 lg:mt-16',
               ][i] ?? 'lg:col-span-4'

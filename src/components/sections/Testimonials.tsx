@@ -5,21 +5,21 @@ import FadeUp from '../ui/FadeUp'
 const QUOTES = [
   {
     quote:
-      'We switched our whole roti line over and the dough stopped fighting us. Same hydration, better lift, and it holds overnight.',
-    name: 'Rukhsana P.',
-    role: 'Head baker, Noor Bakehouse',
+      'We moved the whole naan line over and the dough stopped fighting us. Same water, better lift, and it holds overnight.',
+    name: 'Shazia I.',
+    role: 'Head baker, Rehmat Bakers',
   },
   {
     quote:
-      'Twelve years of supply and I have never had to send a lot back. When something looks off, they call me before I call them.',
-    name: 'Devendra S.',
-    role: 'Distributor, Central belt',
+      'Eight years of supply and I have never had to send a lot back. When something looks off, they call me before I call them.',
+    name: 'Imran S.',
+    role: 'Distributor, Punjab belt',
   },
   {
     quote:
       'The spec sheet actually matches what arrives. In this trade that is rarer than it should be.',
-    name: 'Anita M.',
-    role: 'Procurement, Saanjh Foods',
+    name: 'Ayesha T.',
+    role: 'Procurement, Chenab Foods',
   },
 ]
 
@@ -98,8 +98,12 @@ export default function Testimonials() {
         onPointerUp={onPointerUp}
         onPointerCancel={() => (dragState.current.dragging = false)}
       >
-        <blockquote className="min-h-[9em] sm:min-h-[7em] md:min-h-[6em]">
-          <p className="max-w-4xl font-serif text-2xl font-normal leading-[1.25] tracking-tight text-ink sm:text-3xl md:text-4xl lg:text-5xl">
+        {/* The reserved height lives on the paragraph, in its own em, so it
+            tracks the fluid type instead of the 16px root. Quotes wrap to
+            more lines as the text shrinks, hence the larger em on narrow
+            screens. */}
+        <blockquote>
+          <p className="min-h-[6.5em] max-w-4xl font-serif text-[clamp(1.5rem,3.2vw+0.5rem,2.75rem)] font-normal leading-[1.25] tracking-tight text-ink sm:min-h-[5.5em] md:min-h-[5em]">
             <CharFade text={`“${active.quote}”`} id={index} />
           </p>
         </blockquote>

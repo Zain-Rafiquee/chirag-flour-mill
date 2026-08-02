@@ -2,10 +2,10 @@ import FadeUp from '../ui/FadeUp'
 import SplitText from '../ui/SplitText'
 
 const CERTS = [
-  { short: 'FSSAI', full: 'Food Safety & Standards Authority of India' },
+  { short: 'PSQCA', full: 'Pakistan Standards & Quality Control Authority' },
   { short: 'ISO 22000', full: 'Food safety management' },
   { short: 'HACCP', full: 'Hazard analysis & critical control points' },
-  { short: 'AGMARK', full: 'Agricultural grading & marking' },
+  { short: 'PFA', full: 'Punjab Food Authority licence' },
   { short: 'BRCGS', full: 'Global food safety standard' },
 ]
 
