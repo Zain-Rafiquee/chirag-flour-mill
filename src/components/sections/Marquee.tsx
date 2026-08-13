@@ -1,16 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { useReducedMotion } from '../../lib/motion'
 
-const ITEMS = [
-  'Chakki Atta',
-  'Desi Wheat',
-  'Maida',
-  'Suji',
-  'Chokar',
-  'Fine Atta',
-  'Multigrain',
-  'Durum Semolina',
-]
+/** The four grades the mill actually sells, matching the products section. */
+const ITEMS = ['Super Fine Atta', 'Maida', 'Suji', 'Chokar']
 
 /** px per second at rest. */
 const BASE_SPEED = 60
