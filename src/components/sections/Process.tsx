@@ -110,9 +110,13 @@ function StageCard({ stage, active }: { stage: Stage; active: boolean }) {
       >
         {stage.title}
       </h3>
+      {/* The figure below takes the height this text leaves over, so copy that
+          wraps to three lines on a phone would give its card a shorter image
+          than a two-line neighbour. Reserving three lines (3 x 1.625 leading,
+          in em so it tracks the font size) keeps every figure the same size. */}
       <p
         data-stage-item
-        className="mt-3 max-w-xs text-sm leading-relaxed text-ink/70"
+        className="mt-3 min-h-[4.875em] max-w-xs text-sm leading-relaxed text-ink/70"
       >
         {stage.copy}
       </p>
