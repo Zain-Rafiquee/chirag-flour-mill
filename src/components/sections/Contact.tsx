@@ -12,11 +12,12 @@ const PHONE_DISPLAY = '+92 300 7666665'
 /** Same line in international form, for the tel: href and overseas buyers. */
 const PHONE_E164 = '+923007666665'
 
+/** Ordered as the products section lists them. */
 const PRODUCT_OPTIONS = [
-  'Refined Atta',
+  'Super Fine Atta',
   'Maida',
-  'Chokar',
   'Suji',
+  'Chokar',
   'Custom Specifications',
 ]
 
