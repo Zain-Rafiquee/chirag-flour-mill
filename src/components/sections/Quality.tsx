@@ -1,14 +1,6 @@
 import FadeUp from '../ui/FadeUp'
 import SplitText from '../ui/SplitText'
 
-const CERTS = [
-  { short: 'PSQCA', full: 'Pakistan Standards & Quality Control Authority' },
-  { short: 'ISO 22000', full: 'Food safety management' },
-  { short: 'HACCP', full: 'Hazard analysis & critical control points' },
-  { short: 'PFA', full: 'Punjab Food Authority licence' },
-  { short: 'BRCGS', full: 'Global food safety standard' },
-]
-
 const NOTES = [
   {
     title: 'Tested per batch, not per season',
@@ -61,26 +53,6 @@ export default function Quality() {
           </div>
         </div>
       </div>
-
-      {/* Certification row */}
-      <FadeUp delay={160} className="mt-20">
-        <div className="h-px w-full bg-ink/10" />
-        <ul className="mt-10 grid grid-cols-2 gap-x-8 gap-y-10 sm:grid-cols-3 lg:grid-cols-5">
-          {CERTS.map((cert) => (
-            <li key={cert.short} className="flex flex-col items-start gap-2">
-              {/* Mark stands in for a supplied logo file */}
-              <div className="flex h-14 w-full items-center justify-center border border-ink/12 bg-surface/70">
-                <span className="text-sm font-medium tracking-[0.08em] text-ink/70">
-                  {cert.short}
-                </span>
-              </div>
-              <span className="text-[10px] leading-snug tracking-[0.1em] text-ink/40">
-                {cert.full}
-              </span>
-            </li>
-          ))}
-        </ul>
-      </FadeUp>
     </section>
   )
 }

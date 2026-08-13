@@ -6,8 +6,11 @@ import MagneticButton from '../ui/MagneticButton'
 type FieldName = 'name' | 'business' | 'city' | 'product' | 'volume' | 'message'
 
 /** Country code + number, digits only — the format wa.me expects. */
-const WHATSAPP_NUMBER = '923000000000'
-const WHATSAPP_DISPLAY = '+92 300 0000000'
+const WHATSAPP_NUMBER = '923007666665'
+/** Shown to the reader in international form. */
+const PHONE_DISPLAY = '+92 300 7666665'
+/** Same line in international form, for the tel: href and overseas buyers. */
+const PHONE_E164 = '+923007666665'
 
 const PRODUCT_OPTIONS = [
   'Refined Atta',
@@ -403,33 +406,43 @@ export default function Contact() {
                     'Address',
                     'Sandhelianwali Bypass, Multan Road, Pir Mahal, Pakistan 36300',
                   ],
-                  ['WhatsApp', WHATSAPP_DISPLAY],
+                  ['Phone', PHONE_DISPLAY],
+                  ['WhatsApp', PHONE_DISPLAY],
                   ['Hours', 'Mon–Sat, 8:00 – 18:30 IST'],
-                ].map(([label, value]) => (
-                  <div key={label} className="border-t border-ink/10 pt-4">
-                    <dt className="text-[10px] uppercase tracking-[0.15em] text-ink/45">
-                      {label}
-                    </dt>
-                    <dd className="mt-1 text-sm text-ink/80">
-                      {label === 'WhatsApp' || label === 'Address' ? (
-                        <a
-                          href={
-                            label === 'Address'
-                              ? MAPS_URL
-                              : `https://wa.me/${WHATSAPP_NUMBER}`
-                          }
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="underline decoration-ink/20 underline-offset-4 transition-colors duration-300 hover:text-accent"
-                        >
-                          {value}
-                        </a>
-                      ) : (
-                        value
-                      )}
-                    </dd>
-                  </div>
-                ))}
+                ].map(([label, value]) => {
+                  const href =
+                    label === 'Address'
+                      ? MAPS_URL
+                      : label === 'Phone'
+                        ? `tel:${PHONE_E164}`
+                        : label === 'WhatsApp'
+                          ? `https://wa.me/${WHATSAPP_NUMBER}`
+                          : null
+                  // tel: hands off to the dialler, so it must stay in this tab.
+                  const external = href !== null && label !== 'Phone'
+
+                  return (
+                    <div key={label} className="border-t border-ink/10 pt-4">
+                      <dt className="text-[10px] uppercase tracking-[0.15em] text-ink/45">
+                        {label}
+                      </dt>
+                      <dd className="mt-1 text-sm text-ink/80">
+                        {href ? (
+                          <a
+                            href={href}
+                            target={external ? '_blank' : undefined}
+                            rel={external ? 'noopener noreferrer' : undefined}
+                            className="underline decoration-ink/20 underline-offset-4 transition-colors duration-300 hover:text-accent"
+                          >
+                            {value}
+                          </a>
+                        ) : (
+                          value
+                        )}
+                      </dd>
+                    </div>
+                  )
+                })}
               </dl>
             </FadeUp>
           </div>

@@ -44,7 +44,7 @@ const STAGES: Stage[] = [
   {
     step: 4,
     title: 'Grinding',
-    copy: 'Slow stone rotation, held cool, so the germ and its oils survive the mill.',
+    copy: 'Roller stands set fine and run cool, so every pass comes off at a consistent texture.',
     image: '/process-grinding.webp',
     alt: 'Fresh flour pouring from the discharge chute of a mill stand into a growing heap',
   },

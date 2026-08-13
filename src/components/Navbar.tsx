@@ -87,7 +87,9 @@ export default function Navbar() {
             no longer fits beside the links and the CTA at md, so it gives way
             instead of pushing them off the bar. */}
         <a href="#" className="flex min-w-0 items-center gap-2.5">
-          <Logo className="w-6 h-6 shrink-0 text-[#191919]" />
+          {/* Larger than the old glyph: this mark carries a wreath and Urdu
+              sub-line, which turn to mush much below 36px. */}
+          <Logo className="w-9 h-9 shrink-0" />
           <span className="hidden min-[360px]:inline truncate font-semibold text-sm tracking-tight text-[#191919] lg:text-base">
             Chirag Flour and General Mills
           </span>

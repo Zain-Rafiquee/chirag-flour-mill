@@ -19,7 +19,7 @@ export default function Heritage() {
 
           <SplitText
             as="h2"
-            text="Ten years of stone and patience, on machinery built in Turkey."
+            text="Ten years of precision and patience, on machinery built in Turkey."
             className="mt-6 font-serif text-3xl font-normal leading-[1.12] tracking-tight text-ink sm:text-4xl md:text-5xl lg:text-6xl"
           />
 
@@ -27,16 +27,18 @@ export default function Heritage() {
             <FadeUp delay={120}>
               <p className="text-sm leading-relaxed text-ink/70 md:text-[15px]">
                 We buy standing crop from the same farming families season
-                after season, on the canal belt of the Rachna Doab where the
-                grain runs hard and sweet. Every lot is tasted before it is
-                bought.
+                after season, on the canal belt along the Ravi where the grain
+                runs hard and sweet. Every lot is tasted before it is bought.
               </p>
             </FadeUp>
             <FadeUp delay={220}>
               <p className="text-sm leading-relaxed text-ink/70 md:text-[15px]">
-                The plant is Turkish-built, and the stones turn slowly and stay
-                cool, so the germ survives the grind. It costs us throughput.
-                It is the reason the flour smells like wheat and not like paper.
+                The mill is powered by Turkish-built milling machinery,
+                engineered for precision, consistency, and efficient wheat
+                processing. From cleaning and conditioning to grinding and
+                sifting, the system is designed to deliver flour with a
+                consistent texture, dependable quality, and the natural
+                character of wheat.
               </p>
             </FadeUp>
           </div>

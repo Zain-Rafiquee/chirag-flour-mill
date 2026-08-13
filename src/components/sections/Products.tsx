@@ -10,70 +10,50 @@ interface Product {
   name: string
   /** English descriptor, shown beneath the name. */
   subtitle: string
-  protein: string
-  texture: string
-  bestFor: string
   blurb: string
+  /** Omit to fall back to the CSS placeholder in Figure. */
+  image?: string
   seed: number
 }
 
 const PRODUCTS: Product[] = [
   {
     id: 'chakki',
-    name: 'Refined Atta',
-    subtitle: 'Stone-ground whole wheat',
-    protein: '11.8%',
-    texture: 'Coarse, flecked with bran',
-    bestFor: 'Roti, paratha, everyday baking',
+    name: 'Super Fine Atta',
+    subtitle: 'Whole wheat',
     blurb:
-      'Stone-ground with the germ intact, so it keeps the sweet, grassy smell that roller-milled atta loses in the heat of the mill.',
+      'Finely milled wheat flour with a smooth, consistent texture. Carefully processed for soft dough and reliable results, making it ideal for everyday rotis, chapatis and other traditional favourites.',
+    image: '/product-atta.webp',
     seed: 1,
   },
   {
     id: 'maida',
     name: 'Maida',
     subtitle: 'Refined flour',
-    protein: '9.4%',
-    texture: 'Fine, silk-sifted',
-    bestFor: 'Pastry, naan, laminated dough',
     blurb:
       'Sifted through fine silk until it runs like powder. Low protein and low ash, for doughs that should stay tender rather than chewy.',
+    image: '/product-maida.webp',
     seed: 2,
   },
   {
     id: 'suji',
     name: 'Suji',
     subtitle: 'Semolina',
-    protein: '12.6%',
-    texture: 'Granular, even cut',
-    bestFor: 'Halwa, kheer, pasta, coatings',
     blurb:
-      'Cut from the hard endosperm of durum and graded to a single particle size, so it hydrates evenly and never goes gummy.',
+      'Carefully milled wheat semolina with a clean, consistent texture. Ideal for traditional desserts, halwa, savoury dishes and everyday cooking, delivering reliable quality in every recipe.',
+    image: '/product-suji.webp',
     seed: 3,
   },
   {
     id: 'bran',
     name: 'Chokar',
     subtitle: 'Wheat bran',
-    protein: '15.1%',
-    texture: 'Flaked, light',
-    bestFor: 'Fibre blends, breads, feed',
     blurb:
-      'The outer layers, taken off clean during tempering and kept dry. High fibre, and the reason our whole wheat can be dialled to order.',
+      'The nutritious outer layer of wheat, carefully separated during milling. Naturally rich in fibre, Chokar is ideal for adding wholesome texture and extra fibre to everyday meals.',
+    image: '/product-chokar.webp',
     seed: 4,
   },
 ]
-
-function SpecRow({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex items-baseline justify-between gap-4 border-b border-ink/10 py-2 last:border-b-0">
-      <dt className="text-[10px] uppercase tracking-[0.15em] text-ink/45">
-        {label}
-      </dt>
-      <dd className="text-right text-xs text-ink/80">{value}</dd>
-    </div>
-  )
-}
 
 function ProductCard({
   product,
@@ -92,7 +72,8 @@ function ProductCard({
       <motion.div layoutId={`product-image-${product.id}`} className="overflow-hidden">
         <div className="transition-transform duration-1200 ease-standard group-hover:scale-[1.03]">
           <Figure
-            alt={`${product.name} flour`}
+            src={product.image}
+            alt={`${product.name} — ${product.subtitle}`}
             ratio="4/5"
             seed={product.seed}
           />
@@ -113,13 +94,6 @@ function ProductCard({
             {product.subtitle}
           </p>
         </div>
-
-        {/* Spec card fades in on hover; always available via the overlay */}
-        <dl className="hidden w-40 shrink-0 opacity-0 transition-opacity duration-600 ease-standard group-hover:opacity-100 md:block">
-          <SpecRow label="Protein" value={product.protein} />
-          <SpecRow label="Texture" value={product.texture} />
-          <SpecRow label="Best for" value={product.bestFor} />
-        </dl>
       </div>
     </button>
   )
@@ -174,7 +148,12 @@ function Overlay({
         transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
       >
         <motion.div layoutId={`product-image-${product.id}`}>
-          <Figure alt={`${product.name} flour`} ratio="4/5" seed={product.seed} />
+          <Figure
+            src={product.image}
+            alt={`${product.name} — ${product.subtitle}`}
+            ratio="4/5"
+            seed={product.seed}
+          />
         </motion.div>
 
         <div className="flex flex-col">
@@ -187,12 +166,6 @@ function Overlay({
           <p className="mt-4 text-sm leading-relaxed text-ink/70">
             {product.blurb}
           </p>
-
-          <dl className="mt-8">
-            <SpecRow label="Protein" value={product.protein} />
-            <SpecRow label="Texture" value={product.texture} />
-            <SpecRow label="Best for" value={product.bestFor} />
-          </dl>
 
           <div className="mt-auto pt-8">
             <a
